@@ -1,5 +1,6 @@
 package com.allen.ethjava.account;
 
+import com.allen.ethjava.config.EthConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,6 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Slf4j
 class BalanceServiceTest {
@@ -18,6 +17,8 @@ class BalanceServiceTest {
     @Autowired
     private BalanceService balanceService;
 
+    @Autowired
+    private EthConfig config;
     @Test
     void getGasPrice() {
         BigInteger gasPrice = balanceService.getGasPrice();
@@ -26,9 +27,9 @@ class BalanceServiceTest {
 
     @Test
     void getBalance(){
-        String address = "0x455e5aa18469bc6ccef49594645666c587a3a71b";
+        log.info(config.toString());
 //        BigInteger blockNumber = BigInteger.valueOf(2156740);
-        BigInteger balance = balanceService.getBalance(address);
+        BigInteger balance = balanceService.getBalance(config.getAddress1());
         log.info("balance:{}",balance);
         BigDecimal fromWei = Convert.fromWei(String.valueOf(balance), Convert.Unit.ETHER);
         log.info("fromWei:{}",fromWei);

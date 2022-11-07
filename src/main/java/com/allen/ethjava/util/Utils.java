@@ -11,7 +11,7 @@ import org.web3j.protocol.http.HttpService;
 @Component
 public class Utils {
 
-    private final static String URL = "https://sepolia.infura.io/v3/ff928394b1d94ebda971290f99dfaa35";
+    private final static String URL = "https://goerli.infura.io/v3/c61ff59cee814341b92296e70ecc6063";
 
     public Web3j init(){
         return  Web3j.build(new HttpService(URL));
