@@ -1,8 +1,7 @@
 package com.allen.ethjava.account;
 
-import com.allen.ethjava.util.Utils;
+import com.allen.ethjava.constants.EthConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
@@ -13,9 +12,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.utils.Numeric;
@@ -32,9 +29,6 @@ import java.util.concurrent.ExecutionException;
 @Service
 @Slf4j
 public class ERC20TransService {
-
-    @Autowired
-    private Utils utils;
 
     /**
      *
@@ -55,7 +49,6 @@ public class ERC20TransService {
         //获取nonce，交易笔数
         BigInteger nonce = getNonce(from);
         //get gasPrice
-//        BigInteger gasPrice = getGasPrice();
         BigInteger gasPrice = BigInteger.valueOf(10);
 //        BigInteger gasLimit = Contract.GAS_LIMIT;
         BigInteger gasLimit = BigInteger.valueOf(2100);
@@ -90,35 +83,13 @@ public class ERC20TransService {
         EthGetTransactionCount transactionCount;
         BigInteger nonce = null;
         try {
-            Web3j web3j = utils.init();
-            transactionCount = web3j.ethGetTransactionCount(from, DefaultBlockParameterName.LATEST).sendAsync().get();
+            transactionCount = EthConstant.WEB3J.ethGetTransactionCount(from, DefaultBlockParameterName.LATEST).sendAsync().get();
             nonce = transactionCount.getTransactionCount();
         } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
         }
         return nonce;
     }
-
-
-    /**
-     * 获取gas
-     * @return BigInteger 当前gas
-     */
-    private BigInteger getGasPrice() {
-        BigInteger gas = null;
-        try {
-            Web3j web3j = utils.init();
-            EthGasPrice ethGasPrice = web3j.ethGasPrice().sendAsync().get();
-            if (ethGasPrice != null){
-                gas = ethGasPrice.getGasPrice();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
-        }
-        return gas;
-    }
-
-
 
     /**
      * 合约方法
@@ -149,8 +120,7 @@ public class ERC20TransService {
     private EthSendTransaction sendTransaction(String hexValue) {
         EthSendTransaction transaction = null;
         try {
-            Web3j web3j = utils.init();
-            transaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+            transaction = EthConstant.WEB3J.ethSendRawTransaction(hexValue).sendAsync().get();
             if (transaction.hasError()){
                 log.error(transaction.getError().getMessage());
             }

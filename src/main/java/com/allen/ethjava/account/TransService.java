@@ -1,14 +1,13 @@
 package com.allen.ethjava.account;
 
 import com.allen.ethjava.config.EthConfig;
-import com.allen.ethjava.util.Utils;
+import com.allen.ethjava.constants.EthConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
@@ -23,9 +22,6 @@ import java.math.BigInteger;
 @Service
 @Slf4j
 public class TransService {
-
-    @Autowired
-    private Utils utils;
 
     @Autowired
     private EthConfig ethConfig;
@@ -46,9 +42,8 @@ public class TransService {
     }
 
     public BigInteger getTransactionCount(String address){
-        Web3j web3j = utils.init();
         try {
-            EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).sendAsync().get();
+            EthGetTransactionCount ethGetTransactionCount = EthConstant.WEB3J.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).sendAsync().get();
             BigInteger transactionCount = ethGetTransactionCount.getTransactionCount();
             log.info("transactionCount : {}", transactionCount);
             return  transactionCount;
@@ -71,9 +66,8 @@ public class TransService {
     }
 
     public String sendRawTransaction(String hexValue){
-        Web3j web3j = utils.init();
         try {
-            EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+            EthSendTransaction ethSendTransaction = EthConstant.WEB3J.ethSendRawTransaction(hexValue).sendAsync().get();
             if (ethSendTransaction.hasError()){
                 log.info("send raw error : {}"  ,ethSendTransaction.getError().getMessage());
                 throw new Exception(ethSendTransaction.getError().getMessage());

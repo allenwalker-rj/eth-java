@@ -1,10 +1,8 @@
 package com.allen.ethjava.account;
 
-import com.allen.ethjava.util.Utils;
+import com.allen.ethjava.constants.EthConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthAccounts;
 
 import java.util.Collections;
@@ -18,13 +16,9 @@ import java.util.List;
 @Slf4j
 public class AccountService {
 
-    @Autowired
-    private Utils utils;
-
     public List<String> createAccount(){
-        Web3j web3j = utils.init();
         try {
-            EthAccounts accounts = web3j.ethAccounts().sendAsync().get();
+            EthAccounts accounts = EthConstant.WEB3J.ethAccounts().sendAsync().get();
             return accounts.getAccounts();
         }catch (Exception e){
             log.error(e.getMessage());
@@ -33,9 +27,8 @@ public class AccountService {
     }
 
     public void getAccount(){
-        Web3j web3j = utils.init();
         try {
-            web3j.ethAccounts().sendAsync().get();
+            EthConstant.WEB3J.ethAccounts().sendAsync().get();
 
         }catch (Exception e){
             log.info(e.getMessage());

@@ -1,10 +1,8 @@
 package com.allen.ethjava.account;
 
-import com.allen.ethjava.util.Utils;
+import com.allen.ethjava.constants.EthConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlockNumber;
 
 import java.math.BigInteger;
@@ -17,15 +15,10 @@ import java.math.BigInteger;
 @Slf4j
 public class BlockService {
 
-    @Autowired
-    private Utils utils;
-
     public BigInteger getLastBlock(){
-        Web3j web3j = utils.init();
         try {
-            EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
-            BigInteger blockNumber = ethBlockNumber.getBlockNumber();
-            return blockNumber;
+            EthBlockNumber ethBlockNumber = EthConstant.WEB3J.ethBlockNumber().sendAsync().get();
+            return ethBlockNumber.getBlockNumber();
         }catch ( Exception e){
             log.error(e.getMessage());
         }
